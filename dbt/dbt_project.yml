@@ -1,0 +1,49 @@
+name: 'stock_market_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'stock_market_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+seed-paths: ["seeds"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  stock_market_analytics:
+    bronze:
+      +materialized: table
+      +schema: bronze
+      +tags: ["bronze", "raw"]
+
+    silver:
+      +materialized: view
+      +schema: silver
+      +tags: ["silver", "staging"]
+
+    gold:
+      +materialized: table
+      +schema: gold
+      +tags: ["gold", "marts"]
+      facts:
+        +tags: ["facts"]
+      dimensions:
+        +tags: ["dimensions"]
+
+seeds:
+  stock_symbols:
+    +schema: gold
+    +tags: ["seed"]
+
+vars:
+  start_date: '2024-01-01'
+  api_rate_limit_calls: 5
+  api_rate_limit_interval_seconds: 60

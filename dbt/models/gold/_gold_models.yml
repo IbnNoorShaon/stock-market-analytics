@@ -1,0 +1,118 @@
+version: 2
+
+models:
+  - name: fct_daily_returns
+    description: "Fact table for daily stock returns with calculated metrics"
+    columns:
+      - name: return_id
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: stock_id
+        description: "Foreign key to dim_stocks"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_stocks')
+              field: stock_id
+      - name: symbol
+        description: "Stock ticker symbol"
+      - name: date
+        description: "Trading date"
+        tests:
+          - not_null
+      - name: close_price
+        description: "Stock closing price"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+      - name: volume
+        description: "Trading volume"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: daily_return_pct
+        description: "Daily return percentage"
+      - name: abs_return
+        description: "Absolute value of daily return"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+  - name: fct_price_movements
+    description: "Fact table for price movements and technical indicators"
+    columns:
+      - name: movement_id
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: stock_id
+        description: "Foreign key to dim_stocks"
+        tests:
+          - not_null
+      - name: symbol
+        description: "Stock ticker symbol"
+      - name: date
+        description: "Trading date"
+      - name: ma_7day
+        description: "7-day moving average"
+      - name: ma_30day
+        description: "30-day moving average"
+      - name: ma_90day
+        description: "90-day moving average"
+      - name: volatility_30day
+        description: "30-day price volatility (standard deviation)"
+      - name: price_vs_ma30
+        description: "Price position relative to 30-day MA"
+        tests:
+          - accepted_values:
+              values: ['ABOVE_MA30', 'BELOW_MA30', 'AT_MA30']
+
+  - name: dim_stocks
+    description: "Dimension table for stock metadata and categorization"
+    columns:
+      - name: stock_id
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: symbol
+        description: "Stock ticker symbol"
+        tests:
+          - unique
+          - not_null
+      - name: company_name
+        description: "Full company name"
+      - name: sector
+        description: "Industry sector"
+      - name: market_cap
+        description: "Market capitalization in USD"
+      - name: market_cap_category
+        description: "Market cap classification"
+        tests:
+          - accepted_values:
+              values: ['LARGE_CAP', 'MID_CAP', 'SMALL_CAP', 'MICRO_CAP']
+
+  - name: dim_dates
+    description: "Time dimension for temporal analysis"
+    columns:
+      - name: date_key
+        description: "Date (primary key)"
+        tests:
+          - unique
+          - not_null
+      - name: year_number
+        description: "Calendar year"
+      - name: month_number
+        description: "Month of year (1-12)"
+      - name: day_of_month
+        description: "Day of month"
+      - name: is_weekend
+        description: "Whether date is weekend"
+      - name: month_name
+        description: "Month name"
+      - name: day_name
+        description: "Day of week name"

@@ -1,0 +1,56 @@
+version: 2
+
+sources:
+  - name: raw
+    database: STOCK_ANALYTICS
+    schema: bronze
+    description: "Raw data landed by Fivetran from Alpha Vantage API"
+
+    tables:
+      - name: RAW_STOCKS_DAILY
+        description: "Daily stock price data (OHLCV) from Alpha Vantage"
+        columns:
+          - name: SYMBOL
+            description: "Stock ticker symbol"
+            tests:
+              - not_null
+              - relationships:
+                  to: ref('dim_stocks')
+                  field: symbol
+          - name: DATE
+            description: "Trading date"
+            tests:
+              - not_null
+          - name: OPEN_PRICE
+            description: "Opening price"
+            tests:
+              - not_null
+          - name: HIGH_PRICE
+            description: "Highest price of the day"
+          - name: LOW_PRICE
+            description: "Lowest price of the day"
+          - name: CLOSE_PRICE
+            description: "Closing price"
+            tests:
+              - not_null
+          - name: VOLUME
+            description: "Trading volume"
+          - name: _FIVETRAN_SYNCED
+            description: "Fivetran sync timestamp"
+
+      - name: RAW_STOCKS_INFO
+        description: "Stock metadata and company information"
+        columns:
+          - name: SYMBOL
+            description: "Stock ticker symbol"
+            tests:
+              - not_null
+              - unique
+          - name: NAME
+            description: "Company name"
+          - name: SECTOR
+            description: "Industry sector"
+          - name: MARKET_CAP
+            description: "Market capitalization"
+          - name: _FIVETRAN_SYNCED
+            description: "Fivetran sync timestamp"

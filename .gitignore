@@ -1,0 +1,36 @@
+# dbt
+target/
+dbt_packages/
+logs/
+.dbt/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+profiles.yml
+
+# Fivetran config
+.fivetran/
+fivetran_creds.yml
+
+# Looker
+*.lookml

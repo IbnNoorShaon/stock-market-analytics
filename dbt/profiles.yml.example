@@ -1,0 +1,26 @@
+stock_market_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: [YOUR_SNOWFLAKE_ACCOUNT_ID]
+      user: [YOUR_SNOWFLAKE_USERNAME]
+      password: [YOUR_SNOWFLAKE_PASSWORD]
+      role: ANALYTICS_ROLE
+      database: STOCK_ANALYTICS
+      schema: silver
+      warehouse: COMPUTE_WH
+      threads: 4
+      client_session_keep_alive: False
+
+    prod:
+      type: snowflake
+      account: [YOUR_SNOWFLAKE_ACCOUNT_ID]
+      user: [YOUR_SNOWFLAKE_USERNAME]
+      password: [YOUR_SNOWFLAKE_PASSWORD]
+      role: ANALYTICS_ROLE
+      database: STOCK_ANALYTICS
+      schema: gold
+      warehouse: COMPUTE_WH
+      threads: 8
+      client_session_keep_alive: False
