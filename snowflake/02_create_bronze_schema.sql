@@ -38,10 +38,6 @@ create table if not exists RAW_STOCKS_INFO (
 )
 comment = 'Stock metadata from Alpha Vantage (via Fivetran)';
 
--- Create indexes for performance
-create index if not exists idx_raw_daily_symbol on RAW_STOCKS_DAILY(SYMBOL);
-create index if not exists idx_raw_daily_date on RAW_STOCKS_DAILY(DATE);
-
 -- Set table ownership
 alter table RAW_STOCKS_DAILY owner to role ANALYTICS_ROLE;
 alter table RAW_STOCKS_INFO owner to role ANALYTICS_ROLE;
